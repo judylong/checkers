@@ -1,4 +1,5 @@
 require_relative 'board'
+require_relative 'error'
 
 class Piece
   PAWN_DELTAS = [
@@ -74,7 +75,7 @@ class Piece
   # end
 
   def perform_jump(new_pos)
-    if moves.include?(new_pos)
+    if jump_moves.include?(new_pos)
       board.update_board(pos, new_pos)
       board.remove_captured(captureable_square(new_pos))
       move_piece(new_pos)
@@ -86,7 +87,7 @@ class Piece
 
   def maybe_promote
     row, col = pos
-    @promote = true if color == :B ? col == SIZE - 1 : col == 0
+    @promote = true if color == :B ? col == Board::SIZE - 1 : col == 0
   end
 
   def move_piece(new_pos)
@@ -126,6 +127,23 @@ class Piece
     color == :B ? 1 : -1
   end
 
+  def perform_moves!(move_sequence, board)
+    if move_sequence.count == 1
+      perform_slide
+      raise InvalidMoveError if perform_slide == false
+    else
+      move_sequence.each { |move| perform_jump }
+      raise InvalidMoveError if perform_jump == false
+    end
+  end
 
-
+  def valid_move_seq?
+    dup_board = board.dup
+    perform_moves!(move_sequence, dup_board)
+    true
+  rescue
+    return false
+  end
+  end
+  
 end
