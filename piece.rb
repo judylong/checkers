@@ -1,9 +1,16 @@
 require_relative 'board'
 
 class Piece
-  DELTAS = [
+  PAWN_DELTAS = [
     [1, 1],
     [1, -1]
+  ]
+
+  KING_DELTAS = [
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1]
   ]
 
   attr_accessor :pos, :color, :board
@@ -24,27 +31,88 @@ class Piece
     @promoted = true
   end
 
+  def deltas
+    promoted? ? KING_DELTAS : PAWN_DELTAS
+  end
+
   def perform_slide(new_pos)
-    return false if !board.on_board?(new_pos) || !board[new_pos].nil?
-    valid_pos = new_pos if moves.include?(new_pos)
-    board.update_board(pos, valid_pos)
-    true
+    if slide_moves.include?(new_pos)
+      board.update_board(pos, new_pos)
+      move_piece(new_pos)
+      return true
+    end
+    false
   end
 
-  def moves
+  def slide_moves
     row, col = pos
-    DELTAS.map { |dr, dc| [row + (dr*move_diffs), col + (dc*move_diffs)]}
+    s_moves = []
+    deltas.each do |dr, dc|
+      move = [row + (dr*move_diffs), col + (dc*move_diffs)]
+      if board.on_board?(move) && board[move].nil?
+        s_moves << move
+      end
+    end
+    s_moves
   end
 
-  def inspect
-    "p"
+  def jump_moves
+    row, col = pos
+    j_moves = []
+    deltas.each do |dr, dc|
+      move = [row + (dr*move_diffs*2), col + (dc*move_diffs*2)]
+      if board.on_board?(move) && board[move].nil? && captureable_opponent?(move)
+        j_moves << move
+      end
+    end
+    j_moves
   end
 
-  def perform_jump(pos)
-    return false if illegal?(pos)
+  # def moves
+  #   slide_moves + jump_moves
+  # end
+
+  def perform_jump(new_pos)
+    if moves.include?(new_pos)
+      board.update_board(pos, new_pos)
+      board.remove_captured(captureable_square(new_pos))
+      move_piece(new_pos)
+      return true
+    end
+    false
+  end
+
+  def move_piece(new_pos)
+    self.pos = new_pos
+  end
+
+  def render
+    return "b" if color == :B
+    return "r" if color == :R
+  end
+
+  def captureable_square(new_pos)
+    new_row, new_col = new_pos
     row, col = pos
 
-    true
+    if new_row > row #moving down
+      middle_row = row + 1
+    else #moving up
+      middle_row = row - 1
+    end
+
+    if new_col < col #moving left
+      middle_col = col - 1
+    elsif new_col > col #moving right
+      middle_col = col + 1
+    end
+
+    [middle_row, middle_col]
+  end
+
+  def captureable_opponent?(new_pos)
+    square = captureable_square(new_pos)
+    !board[square].nil? && board[square].color != color
   end
 
   def move_diffs
