@@ -26,16 +26,18 @@ class Piece
 
   def perform_slide(new_pos)
     return false if !board.on_board?(new_pos) || !board[new_pos].nil?
-    row, col = pos
-    moves = DELTAS.map { |dr, dc| [row + (dr*move_diffs), col + (dc*move_diffs)]}
     valid_pos = new_pos if moves.include?(new_pos)
-    board[pos] = nil
-    board[valid_pos] = self
+    board.update_board(pos, valid_pos)
     true
   end
 
+  def moves
+    row, col = pos
+    DELTAS.map { |dr, dc| [row + (dr*move_diffs), col + (dc*move_diffs)]}
+  end
+
   def inspect
-    {"p"}
+    "p"
   end
 
   def perform_jump(pos)
