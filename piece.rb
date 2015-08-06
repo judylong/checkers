@@ -127,7 +127,7 @@ class Piece
     color == :B ? 1 : -1
   end
 
-  def perform_moves!(move_sequence, board)
+  def perform_moves!(move_sequence)
     if move_sequence.count == 1
       begin
         raise InvalidMoveError unless perform_slide(move_sequence[0])
@@ -137,12 +137,13 @@ class Piece
     else
       move_sequence.each { |move| raise InvalidMoveError unless perform_jump(move) }
     end
+    nil
   end
 
   def valid_move_seq?(move_sequence)
     begin
       dup_board = board.dup
-      perform_moves!(move_sequence, dup_board)
+      dup_board[pos].perform_moves!(move_sequence)
       true
     rescue
       return false
@@ -155,7 +156,7 @@ class Piece
 
   def perform_moves(move_sequence)
     if valid_move_seq?(move_sequence)
-      perform_moves!
+      perform_moves!(move_sequence)
     else
       raise InvalidMoveError
     end
