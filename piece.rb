@@ -130,14 +130,12 @@ class Piece
   def perform_moves!(move_sequence, board)
     if move_sequence.count == 1
       begin
-        perform_slide
+        raise InvalidMoveError unless perform_slide(move_sequence[0])
       rescue
-        perform_jump
-        raise InvalidMoveError if perform_jump == false
+        raise InvalidMoveError unless perform_jump(move_sequence[0])
       end
     else
-      move_sequence.each { |move| perform_jump }
-      raise InvalidMoveError if perform_jump == false
+      move_sequence.each { |move| raise InvalidMoveError unless perform_jump(move) }
     end
   end
 
