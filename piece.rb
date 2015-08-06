@@ -145,5 +145,9 @@ class Piece
     return false
   end
   end
-  
+
+  def dup(new_board)
+    self.new(pos, color, new_board)
+  end
+
 end
