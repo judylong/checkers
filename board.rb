@@ -62,7 +62,7 @@ class Board
 
   def dup
     duped_board = Board.new
-    self.each_with_index do |row, row_i|
+    grid.each_with_index do |row, row_i|
       row.each_with_index do |square, col_i|
         duped_board[[row_i, col_i]] = square.nil? ? nil : square.dup(duped_board)
       end
