@@ -150,4 +150,12 @@ class Piece
     self.new(pos, color, new_board)
   end
 
+  def perform_moves(move_sequence)
+    if valid_move_seq?(move_sequence)
+      perform_moves!
+    else
+      raise InvalidMoveError
+    end
+  end
+
 end
