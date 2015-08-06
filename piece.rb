@@ -129,25 +129,30 @@ class Piece
 
   def perform_moves!(move_sequence, board)
     if move_sequence.count == 1
-      perform_slide
-      raise InvalidMoveError if perform_slide == false
+      begin
+        perform_slide
+      rescue
+        perform_jump
+        raise InvalidMoveError if perform_jump == false
+      end
     else
       move_sequence.each { |move| perform_jump }
       raise InvalidMoveError if perform_jump == false
     end
   end
 
-  def valid_move_seq?
-    dup_board = board.dup
-    perform_moves!(move_sequence, dup_board)
-    true
-  rescue
-    return false
-  end
+  def valid_move_seq?(move_sequence)
+    begin
+      dup_board = board.dup
+      perform_moves!(move_sequence, dup_board)
+      true
+    rescue
+      return false
+    end
   end
 
   def dup(new_board)
-    self.new(pos, color, new_board)
+    self.class.new(pos, color, new_board)
   end
 
   def perform_moves(move_sequence)
