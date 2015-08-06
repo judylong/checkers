@@ -18,5 +18,8 @@ class Board
     row, col = pos
     grid[row][col] = obj
   end
-  
+
+  def on_board?(pos)
+    pos.all? { |coord| coord.between?(0, SIZE - 1) }
+  end
 end
