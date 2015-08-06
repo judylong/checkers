@@ -70,5 +70,15 @@ class Board
     duped_board
   end
 
+  def over?
+    count_color(:R) == 0 || count_color(:B) == 0
+  end
+
+  def count_color(color)
+    count = 0
+    grid.flatten.compact.each { |piece| count += 1 if piece.color == color}
+    count
+  end
+
 
 end
