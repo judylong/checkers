@@ -39,6 +39,7 @@ class Piece
     if slide_moves.include?(new_pos)
       board.update_board(pos, new_pos)
       move_piece(new_pos)
+      maybe_promote
       return true
     end
     false
@@ -77,9 +78,15 @@ class Piece
       board.update_board(pos, new_pos)
       board.remove_captured(captureable_square(new_pos))
       move_piece(new_pos)
+      maybe_promote
       return true
     end
     false
+  end
+
+  def maybe_promote
+    row, col = pos
+    @promote = true if color == :B ? col == SIZE - 1 : col == 0
   end
 
   def move_piece(new_pos)
