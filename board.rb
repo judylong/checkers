@@ -43,7 +43,7 @@ class Board
     end_row = color == :B ? 3 : 9
     grid.each_with_index do |row, row_idx|
       0.upto(row.count-1) do |col|
-        if ((row_idx.even? && col.even?) || (row_idx.odd? && col.odd?)) && row_idx >= start_row
+        if ((row_idx.even? && col.odd?) || (row_idx.odd? && col.even?)) && row_idx >= start_row
           self[[row_idx, col]] = Piece.new([row_idx, col], color, self)
         end
       end
@@ -53,14 +53,22 @@ class Board
   end
 
   def render
-    puts "  0 1 2 3 4 5 6 7 8 9"
-    grid.each_with_index do |row, n|
-     row_string = row.map do |square|
-       square.nil? ? "_" : square.render
-     end.join(" ")
-     puts "#{n} " + row_string
+    puts "   0  1  2  3  4  5  6  7  8  9"
+    grid.each_with_index do |row, row_idx|
+     row_string = row.each_with_index.map do |square, col_idx|
+       if !white_square?([row_idx, col_idx])
+         square ? square.render.on_black : "   ".on_black
+       else
+         square ? square.render : "   "
+       end
+     end.join("")
+     puts "#{row_idx} " + row_string
    end
    nil
+  end
+
+  def white_square?(pos)
+    (pos.all? { |coord| coord.even? } || pos.all? { |coord| coord.odd? })
   end
 
   def dup

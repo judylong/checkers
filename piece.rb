@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'error'
+require 'colorize'
 
 class Piece
   PAWN_DELTAS = [
@@ -95,7 +96,7 @@ class Piece
   end
 
   def render
-    color == :B? ? "\u25CF" : "\u25CB"
+    color == :B ? " \u25CF ".yellow : " \u25CF ".red
   end
 
   def captureable_square(new_pos)

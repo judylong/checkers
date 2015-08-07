@@ -7,7 +7,6 @@ class Game
     @board = Board.new
     board.fill_board
     @current_player = :B
-
   end
 
   def switch_player
@@ -39,4 +38,9 @@ class Game
     string_sequence = input.split(" ").map(&:strip)
     seq = string_sequence.map { |arr| arr[1...-1].split(",").map(&:to_i) }
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  Game.new.play
+
 end
