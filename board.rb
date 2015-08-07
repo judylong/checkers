@@ -1,4 +1,5 @@
 require_relative 'piece'
+require 'colorize'
 
 class Board
   SIZE = 10
@@ -54,7 +55,7 @@ class Board
   def render
     puts "  0 1 2 3 4 5 6 7 8 9"
     grid.each_with_index do |row, n|
-     row_string = row.map { |square| square.nil? ? "_" : square.render }.join(" ")
+     row_string = row.map { |square| square.nil? ? "_" : square.render.colorize(:background => :green) }.join(" ")
      puts "#{n} " + row_string
    end
    nil
