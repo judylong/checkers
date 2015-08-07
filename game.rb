@@ -37,6 +37,6 @@ class Game
 
   def parse(input)
     string_sequence = input.split(" ").map(&:strip)
-    seq = string_sequence.map{|arr| arr[1...-1].split(",").map(&:to_i)}
+    seq = string_sequence.map { |arr| arr[1...-1].split(",").map(&:to_i) }
   end
 end
