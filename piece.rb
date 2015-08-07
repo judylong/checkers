@@ -95,8 +95,7 @@ class Piece
   end
 
   def render
-    return "b" if color == :B
-    return "r" if color == :R
+    color == :B? ? "\u25CF" : "\u25CB"
   end
 
   def captureable_square(new_pos)
